@@ -118,6 +118,7 @@ public class QueueProducer implements IQueueProducer, IActor {
             throw new JMSException(err);
         } finally {
             //不重用的producer 进行关闭
+            threadProducerHolder.remove();
             if (!isReuse && holder != null) {
                 producerHolderManager.close(holder);
             }
@@ -162,6 +163,7 @@ public class QueueProducer implements IQueueProducer, IActor {
             }
             throw new JMSException(err);
         } finally {
+            threadProducerHolder.remove();
             if (!isReuse && holder != null) {
                 producerHolderManager.close(holder);
             }

@@ -7,6 +7,8 @@ import win.sinno.jms.activemq.configs.NodeConfigs;
 import win.sinno.jms.activemq.pool.MqConnectionKey;
 import win.sinno.jms.api.ITopicProducer;
 
+import javax.jms.JMSException;
+import javax.jms.Session;
 import javax.jms.TextMessage;
 import java.util.List;
 
@@ -38,6 +40,8 @@ public class TopicProducer implements ITopicProducer, IActor {
     private boolean isTransacted = NodeConfigs.DEFAULT_IS_TRANSACTED;
 
     private int sessionAckMode = NodeConfigs.DEFAULT_SESSION_ACK_MODE;
+
+    private ThreadLocal<ProducerHolder> threadProducerHolder = new ThreadLocal<ProducerHolder>();
 
     public TopicProducer(ActivemqClient activemqClient, ActorInfo actorInfo) {
         this(activemqClient, actorInfo, NodeConfigs.DEFAULT_IS_REUSE);
@@ -75,28 +79,35 @@ public class TopicProducer implements ITopicProducer, IActor {
      * @param message
      */
     @Override
-    public boolean send(String message) {
+    public boolean send(String message) throws JMSException {
         ProducerHolder holder = null;
-
         try {
             if (isReuse) {
                 holder = this.producerHolder;
             } else {
                 holder = this.producerHolderManager.conn();
             }
+            threadProducerHolder.set(holder);
 
             TextMessage msg = this.producerHolder.getSession().createTextMessage(message);
             this.producerHolder.getProducer().send(msg);
 
+            commit();
             return true;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+        } catch (JMSException e) {
+            String err = e.getMessage();
+            try {
+                rollback();
+            } catch (JMSException e1) {
+                err = err + " . " + e1.getMessage();
+            }
+            throw new JMSException(err);
         } finally {
+            threadProducerHolder.remove();
             if (!isReuse && holder != null) {
                 this.producerHolderManager.close(holder);
             }
         }
-        return false;
     }
 
     /**
@@ -105,9 +116,37 @@ public class TopicProducer implements ITopicProducer, IActor {
      * @param messages
      */
     @Override
-    public boolean send(List<String> messages) {
-        // TODO
-        return false;
+    public boolean send(List<String> messages) throws JMSException {
+        ProducerHolder holder = null;
+        try {
+            if (isReuse) {
+                holder = this.producerHolder;
+            } else {
+                holder = this.producerHolderManager.conn();
+            }
+            threadProducerHolder.set(holder);
+
+            for (String message : messages) {
+                TextMessage msg = this.producerHolder.getSession().createTextMessage(message);
+                this.producerHolder.getProducer().send(msg);
+            }
+
+            commit();
+            return true;
+        } catch (JMSException e) {
+            String err = e.getMessage();
+            try {
+                rollback();
+            } catch (JMSException e1) {
+                err = err + " . " + e1.getMessage();
+            }
+            throw new JMSException(err);
+        } finally {
+            threadProducerHolder.remove();
+            if (!isReuse && holder != null) {
+                this.producerHolderManager.close(holder);
+            }
+        }
     }
 
     @Override
@@ -123,13 +162,42 @@ public class TopicProducer implements ITopicProducer, IActor {
     }
 
     @Override
-    public void commit() {
-        // TODO
+    public void commit() throws JMSException {
+
+        if (isTransacted) {
+            ProducerHolder holder = threadProducerHolder.get();
+
+            if (holder == null) {
+                return;
+            }
+
+            Session session = holder.getSession();
+            if (session == null) {
+                return;
+            }
+
+            session.commit();
+        }
+
     }
 
     @Override
-    public void rollback() {
-        // TODO
+    public void rollback() throws JMSException {
+        if (isTransacted) {
+            ProducerHolder holder = threadProducerHolder.get();
+
+            if (holder == null) {
+                return;
+            }
+
+            Session session = holder.getSession();
+            if (session == null) {
+                return;
+            }
+
+            session.rollback();
+        }
+
     }
 
     /**
