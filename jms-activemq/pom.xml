@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sinno-jms</artifactId>
+        <groupId>win.sinno</groupId>
+        <version>1.0.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>jms-activemq</artifactId>
+
+    <properties>
+        <version.activemq>5.14.4</version.activemq>
+        <version.activemq.mqtt>5.14.4</version.activemq.mqtt>
+        <version.jms_spec>1.1</version.jms_spec>
+        <version.qpid.client>0.11.1</version.qpid.client>
+        <version.stomp.client>1.19</version.stomp.client>
+        <version.mqtt.client>1.14</version.mqtt.client>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>win.sinno</groupId>
+            <artifactId>sinno-common</artifactId>
+            <version>${version.sinno.common}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>win.sinno</groupId>
+            <artifactId>jms-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>${version.activemq}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-mqtt</artifactId>
+            <version>${version.activemq.mqtt}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>${version.commons.pool2}</version>
+        </dependency>
+
+        <!--jms spec-->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_1.1_spec</artifactId>
+            <version>${version.jms_spec}</version>
+        </dependency>
+        <!--amqp-->
+        <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-jms-client</artifactId>
+            <version>${version.qpid.client}</version>
+        </dependency>
+        <!--stomp-->
+        <dependency>
+            <groupId>org.fusesource.stompjms</groupId>
+            <artifactId>stompjms-client</artifactId>
+            <version>${version.stomp.client}</version>
+        </dependency>
+        <!--mqtt-->
+        <dependency>
+            <groupId>org.fusesource.mqtt-client</groupId>
+            <artifactId>mqtt-client</artifactId>
+            <version>${version.mqtt.client}</version>
+        </dependency>
+    </dependencies>
+
+</project>
