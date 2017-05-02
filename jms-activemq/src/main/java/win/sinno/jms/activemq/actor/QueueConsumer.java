@@ -68,14 +68,17 @@ public class QueueConsumer implements IQueueConsumer {
     }
 
     public void setMessageListener(MessageListenerHolder messageListenerHolder) {
-        if (messageListenerHolder != null) {
-            Object holder = messageListenerHolder.get();
-            if (holder != null && holder instanceof MessageListener) {
-                this.messageListener = (MessageListener) holder;
-            } else {
-                return;
-            }
+        if (messageListenerHolder == null) {
+            return;
         }
+
+        Object holder = messageListenerHolder.get();
+        if (holder != null && holder instanceof MessageListener) {
+            this.messageListener = (MessageListener) holder;
+        } else {
+            return;
+        }
+
         if (consumerHolder != null && messageListener != null) {
             MessageConsumer consumer = consumerHolder.getConsumer();
 
