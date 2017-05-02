@@ -1,6 +1,5 @@
 package win.sinno.jms.api;
 
-import javax.jms.MessageListener;
 import java.util.Properties;
 
 /**
@@ -81,10 +80,10 @@ public interface IClient extends ICloseable {
 
     IQueueConsumer createQueueConsumer(String queueName);
 
-    IQueueConsumer createQueueConsumer(String queueName, MessageListener messageListener);
+    IQueueConsumer createQueueConsumer(String queueName, MessageListenerHolder messageListenerHolder);
 
     ITopicConsumer createTopicConsumer(String topicName);
 
-    ITopicConsumer createTopicConsumer(String topicName, MessageListener messageListener);
+    ITopicConsumer createTopicConsumer(String topicName, MessageListenerHolder messageListenerHolder);
 
 }

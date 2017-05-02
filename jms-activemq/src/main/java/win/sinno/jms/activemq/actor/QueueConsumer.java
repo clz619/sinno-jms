@@ -6,6 +6,7 @@ import win.sinno.jms.activemq.configs.LoggerConfigs;
 import win.sinno.jms.activemq.configs.NodeConfigs;
 import win.sinno.jms.activemq.pool.MqConnectionKey;
 import win.sinno.jms.api.IQueueConsumer;
+import win.sinno.jms.api.MessageListenerHolder;
 
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -41,16 +42,16 @@ public class QueueConsumer implements IQueueConsumer {
 
     private ConsumerHolder consumerHolder;
 
-    public QueueConsumer(ActivemqClient activemqClient, ActorInfo actorInfo, MessageListener messageListener) {
-        this(activemqClient, actorInfo, messageListener, NodeConfigs.DEFAULT_IS_TRANSACTED, NodeConfigs.DEFAULT_SESSION_ACK_MODE);
+    public QueueConsumer(ActivemqClient activemqClient, ActorInfo actorInfo, MessageListenerHolder messageListenerHolder) {
+        this(activemqClient, actorInfo, messageListenerHolder, NodeConfigs.DEFAULT_IS_TRANSACTED, NodeConfigs.DEFAULT_SESSION_ACK_MODE);
     }
 
-    public QueueConsumer(ActivemqClient activemqClient, ActorInfo actorInfo, MessageListener messageListener, boolean isTransacted, int sessionAckMode) {
+    public QueueConsumer(ActivemqClient activemqClient, ActorInfo actorInfo, MessageListenerHolder messageListenerHolder, boolean isTransacted, int sessionAckMode) {
         this.activemqClient = activemqClient;
         this.actorInfo = actorInfo;
         this.queueName = actorInfo.getNodename();
         this.connectionKey = new MqConnectionKey(actorInfo);
-        this.messageListener = messageListener;
+
         this.isTransacted = isTransacted;
         this.sessionAckMode = sessionAckMode;
 
@@ -58,15 +59,7 @@ public class QueueConsumer implements IQueueConsumer {
 
         consumerHolder = consumerHolderManager.conn();
 
-        if (consumerHolder != null) {
-            MessageConsumer consumer = consumerHolder.getConsumer();
-
-            try {
-                consumer.setMessageListener(messageListener);
-            } catch (Exception e) {
-                LOG.error(e.getMessage(), e);
-            }
-        }
+        setMessageListener(messageListenerHolder);
     }
 
     @Override
@@ -74,10 +67,16 @@ public class QueueConsumer implements IQueueConsumer {
         return queueName;
     }
 
-    public void setMessageListener(MessageListener messageListener) {
-        this.messageListener = messageListener;
-
-        if (consumerHolder != null) {
+    public void setMessageListener(MessageListenerHolder messageListenerHolder) {
+        if (messageListenerHolder != null) {
+            Object holder = messageListenerHolder.get();
+            if (holder != null && holder instanceof MessageListener) {
+                this.messageListener = (MessageListener) holder;
+            } else {
+                return;
+            }
+        }
+        if (consumerHolder != null && messageListener != null) {
             MessageConsumer consumer = consumerHolder.getConsumer();
 
             try {
@@ -85,7 +84,6 @@ public class QueueConsumer implements IQueueConsumer {
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
             }
-
         }
     }
 

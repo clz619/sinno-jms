@@ -80,7 +80,7 @@ public class TopicProducer implements ITopicProducer, IActor {
      * @param message
      */
     @Override
-    public boolean send(String message) throws JMSException {
+    public boolean send(String message) throws Exception {
         ProducerHolder holder = null;
         try {
             if (isReuse) {
@@ -117,7 +117,7 @@ public class TopicProducer implements ITopicProducer, IActor {
      * @param messages
      */
     @Override
-    public boolean send(List<String> messages) throws JMSException {
+    public boolean send(List<String> messages) throws Exception {
         ProducerHolder holder = null;
         try {
             if (isReuse) {
@@ -163,7 +163,7 @@ public class TopicProducer implements ITopicProducer, IActor {
     }
 
     @Override
-    public void commit() throws JMSException {
+    public void commit() throws Exception {
 
         if (isTransacted) {
             ProducerHolder holder = threadProducerHolder.get();
@@ -183,7 +183,7 @@ public class TopicProducer implements ITopicProducer, IActor {
     }
 
     @Override
-    public void rollback() throws JMSException {
+    public void rollback() throws Exception {
         if (isTransacted) {
             ProducerHolder holder = threadProducerHolder.get();
 

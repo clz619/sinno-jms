@@ -91,7 +91,7 @@ public class QueueProducer implements IQueueProducer, IActor {
      * @param message
      */
     @Override
-    public boolean send(String message) throws JMSException {
+    public boolean send(String message) throws Exception {
         ProducerHolder holder = null;
 
         try {
@@ -133,7 +133,7 @@ public class QueueProducer implements IQueueProducer, IActor {
      * @param messages
      */
     @Override
-    public boolean send(List<String> messages) throws JMSException {
+    public boolean send(List<String> messages) throws Exception {
         if (CollectionUtils.isEmpty(messages)) {
             return false;
         }

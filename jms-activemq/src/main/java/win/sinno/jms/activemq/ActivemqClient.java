@@ -6,7 +6,6 @@ import win.sinno.jms.activemq.configs.LoggerConfigs;
 import win.sinno.jms.activemq.configs.NodeConfigs;
 import win.sinno.jms.api.*;
 
-import javax.jms.MessageListener;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -237,7 +236,7 @@ public class ActivemqClient implements IClient {
     }
 
     @Override
-    public IQueueConsumer createQueueConsumer(String queueName, MessageListener messageListener) {
+    public IQueueConsumer createQueueConsumer(String queueName, MessageListenerHolder messageListenerHolder) {
         IQueueConsumer c = null;
 
         try {
@@ -251,7 +250,7 @@ public class ActivemqClient implements IClient {
                     .actorType(ActorType.CONSUMER.getCode())
                     .build();
 
-            c = new QueueConsumer(this, actorInfo, messageListener);
+            c = new QueueConsumer(this, actorInfo, messageListenerHolder);
 
             addConsumer(c);
         } catch (Exception e) {
@@ -268,7 +267,7 @@ public class ActivemqClient implements IClient {
     }
 
     @Override
-    public ITopicConsumer createTopicConsumer(String topicName, MessageListener messageListener) {
+    public ITopicConsumer createTopicConsumer(String topicName, MessageListenerHolder messageListenerHolder) {
         ITopicConsumer c = null;
 
         try {
@@ -282,7 +281,7 @@ public class ActivemqClient implements IClient {
                     .actorType(ActorType.CONSUMER.getCode())
                     .build();
 
-            c = new TopicConsumer(this, actorInfo, messageListener);
+            c = new TopicConsumer(this, actorInfo, messageListenerHolder);
 
             addConsumer(c);
         } catch (Exception e) {

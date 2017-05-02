@@ -32,7 +32,7 @@ public class ActivemqClientTest {
         map.put("nio", "failover:(nio://127.0.0.1:61608)");
     }
 
-    private void testProducer(String protocol, int num) throws JMSException {
+    private void testProducer(String protocol, int num) throws Exception {
         String brokerURL = map.get(protocol);
 
         String queueName = protocol;
@@ -44,8 +44,6 @@ public class ActivemqClientTest {
         IQueueProducer p = activemqClient.createQueueProducer(queueName, true);
 
         for (int i = 1; i <= num; i++) {
-
-
             p.send("" + i);
         }
 
@@ -83,7 +81,9 @@ public class ActivemqClientTest {
             }
         };
 
-        IConsumer c = activemqClient.createQueueConsumer(queueName, messageListener);
+        MessageListenerHolder<MessageListener> mlh = new MessageListenerHolder<>(messageListener);
+
+        IConsumer c = activemqClient.createQueueConsumer(queueName, mlh);
 
 
     }
@@ -100,7 +100,7 @@ public class ActivemqClientTest {
      * @throws InterruptedException
      */
     @Test
-    public void testTcpClient() throws InterruptedException, JMSException {
+    public void testTcpClient() throws InterruptedException, Exception {
         String protocol = "tcp";
         int num = 100;
         long b = System.currentTimeMillis();
@@ -173,8 +173,7 @@ public class ActivemqClientTest {
                 .brokerURL(brokerURL)
                 .clientConfig(config)
                 .build();
-
-        IConsumer c = activemqClient.createQueueConsumer(queueName, new MessageListener() {
+        MessageListener messageListener = new MessageListener() {
             @Override
             public void onMessage(Message message) {
                 try {
@@ -185,7 +184,11 @@ public class ActivemqClientTest {
                     LOG.error(e.getMessage(), e);
                 }
             }
-        });
+        };
+        MessageListenerHolder<MessageListener> mlh = new MessageListenerHolder<>(messageListener);
+
+        IConsumer c = activemqClient.createQueueConsumer(queueName, mlh);
+
 
         //queue producer
         IProducer p = activemqClient.createQueueProducer(queueName, true);
@@ -227,7 +230,7 @@ public class ActivemqClientTest {
                 .build();
 
 
-        IConsumer c1 = activemqClient.createQueueConsumer(queueName, new MessageListener() {
+        IConsumer c1 = activemqClient.createQueueConsumer(queueName, new MessageListenerHolder(new MessageListener() {
 
             private AtomicInteger i = new AtomicInteger();
 
@@ -249,8 +252,8 @@ public class ActivemqClientTest {
                     e.printStackTrace();
                 }
             }
-        });
-        IConsumer c2 = activemqClient.createQueueConsumer(queueName, new MessageListener() {
+        }));
+        IConsumer c2 = activemqClient.createQueueConsumer(queueName, new MessageListenerHolder(new MessageListener() {
 
             private AtomicInteger i = new AtomicInteger();
 
@@ -270,8 +273,8 @@ public class ActivemqClientTest {
                     e.printStackTrace();
                 }
             }
-        });
-        IConsumer c3 = activemqClient.createQueueConsumer(queueName, new MessageListener() {
+        }));
+        IConsumer c3 = activemqClient.createQueueConsumer(queueName, new MessageListenerHolder(new MessageListener() {
 
             private AtomicInteger i = new AtomicInteger();
 
@@ -291,7 +294,7 @@ public class ActivemqClientTest {
                     e.printStackTrace();
                 }
             }
-        });
+        }));
         Thread.sleep(1000000l);
     }
 
@@ -301,7 +304,7 @@ public class ActivemqClientTest {
      * @throws InterruptedException
      */
     @Test
-    public void testAmqpClient() throws InterruptedException, JMSException {
+    public void testAmqpClient() throws InterruptedException, Exception {
         String protocol = "amqp";
         int num = 10000;
         long b = System.currentTimeMillis();
@@ -319,7 +322,7 @@ public class ActivemqClientTest {
      * @throws InterruptedException
      */
     @Test
-    public void testStompClient() throws InterruptedException, JMSException {
+    public void testStompClient() throws InterruptedException, Exception {
         String protocol = "stomp";
         int num = 10000;
         long b = System.currentTimeMillis();
@@ -337,7 +340,7 @@ public class ActivemqClientTest {
      * @throws InterruptedException
      */
     @Test
-    public void testMqttClient() throws InterruptedException, JMSException {
+    public void testMqttClient() throws InterruptedException, Exception {
 
         String protocol = "mqtt";
         int num = 10000;
@@ -358,7 +361,7 @@ public class ActivemqClientTest {
      * @throws InterruptedException
      */
     @Test
-    public void testWsClient() throws InterruptedException, JMSException {
+    public void testWsClient() throws InterruptedException, Exception {
         String protocol = "ws";
         int num = 10000;
         long b = System.currentTimeMillis();
@@ -397,7 +400,7 @@ public class ActivemqClientTest {
      * @throws InterruptedException
      */
     @Test
-    public void testNioClient() throws InterruptedException, JMSException {
+    public void testNioClient() throws InterruptedException, Exception {
         String protocol = "nio";
         int num = 10;
         long b = System.currentTimeMillis();
@@ -410,7 +413,7 @@ public class ActivemqClientTest {
     }
 
     @Test
-    public void testUnreuseProducer() throws InterruptedException, JMSException {
+    public void testUnreuseProducer() throws Exception {
         String protocol = "nio";
         int num = 10;
         long b = System.currentTimeMillis();
@@ -558,7 +561,7 @@ public class ActivemqClientTest {
 
         ITopicProducer topicProducer = client.createTopicProducer(topicName, true);
 
-        ITopicConsumer c1 = client.createTopicConsumer(topicName, new MessageListener() {
+        ITopicConsumer c1 = client.createTopicConsumer(topicName, new MessageListenerHolder(new MessageListener() {
             @Override
             public void onMessage(Message message) {
                 try {
@@ -569,9 +572,9 @@ public class ActivemqClientTest {
                     e.printStackTrace();
                 }
             }
-        });
+        }));
 
-        ITopicConsumer c2 = client.createTopicConsumer(topicName, new MessageListener() {
+        ITopicConsumer c2 = client.createTopicConsumer(topicName, new MessageListenerHolder(new MessageListener() {
             @Override
             public void onMessage(Message message) {
 
@@ -583,7 +586,7 @@ public class ActivemqClientTest {
                     e.printStackTrace();
                 }
             }
-        });
+        }));
 
         try {
             for (int i = 0; i < 5; i++) {
@@ -607,7 +610,7 @@ public class ActivemqClientTest {
             LOG.error(e.getMessage(), e);
         }
 
-        ITopicConsumer c3 = client.createTopicConsumer(topicName, new MessageListener() {
+        ITopicConsumer c3 = client.createTopicConsumer(topicName, new MessageListenerHolder(new MessageListener() {
             @Override
             public void onMessage(Message message) {
 
@@ -619,7 +622,7 @@ public class ActivemqClientTest {
                     e.printStackTrace();
                 }
             }
-        });
+        }));
 
         try {
             for (int i = 10; i < 15; i++) {
@@ -660,14 +663,14 @@ public class ActivemqClientTest {
 
         try {
             queueProducer.send(msgs);
-        } catch (JMSException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         IQueueProducer tp2 = client.createQueueProducer(queue, true, true, Session.AUTO_ACKNOWLEDGE);
         try {
             tp2.send("nihao");
-        } catch (JMSException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

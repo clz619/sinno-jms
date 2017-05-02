@@ -1,7 +1,5 @@
 package win.sinno.jms.api;
 
-import javax.jms.MessageListener;
-
 /**
  * consumer
  *
@@ -11,7 +9,7 @@ import javax.jms.MessageListener;
  */
 public interface IConsumer extends ICloseable {
 
-    void setMessageListener(MessageListener messageListener);
+    void setMessageListener(MessageListenerHolder messageListenerHolder);
 
     String consumer();
 
