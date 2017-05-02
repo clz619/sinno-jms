@@ -62,6 +62,7 @@ public class TopicProducer implements ITopicProducer, IActor {
         this.producerHolderManager = new ProducerHolderManager(actorInfo, connectionKey, isTransacted, sessionAckMode);
 
         this.isReuse = isReuse;
+
         if (isReuse) {
             this.producerHolder = producerHolderManager.conn();
         }

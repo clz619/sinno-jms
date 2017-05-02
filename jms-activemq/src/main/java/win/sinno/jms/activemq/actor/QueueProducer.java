@@ -61,6 +61,7 @@ public class QueueProducer implements IQueueProducer, IActor {
         producerHolderManager = new ProducerHolderManager(actorInfo, connectionKey, isTransacted, sessionAckMode);
 
         this.isReuse = isReuse;
+
         if (isReuse) {
             //复用
             producerHolder = producerHolderManager.conn();
@@ -90,7 +91,7 @@ public class QueueProducer implements IQueueProducer, IActor {
      * @param message
      */
     @Override
-    public synchronized boolean send(String message) throws JMSException {
+    public boolean send(String message) throws JMSException {
         ProducerHolder holder = null;
 
         try {
@@ -132,7 +133,7 @@ public class QueueProducer implements IQueueProducer, IActor {
      * @param messages
      */
     @Override
-    public synchronized boolean send(List<String> messages) throws JMSException {
+    public boolean send(List<String> messages) throws JMSException {
         if (CollectionUtils.isEmpty(messages)) {
             return false;
         }

@@ -7,7 +7,7 @@
     <groupId>win.sinno</groupId>
     <artifactId>sinno-jms</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <modules>
         <module>jms-api</module>
         <module>jms-activemq</module>
@@ -18,6 +18,7 @@
         1.0.0:could use queue producer and consumer
         1.0.1:could use topic producer and consuemr
         1.0.2:add transaction support
+        1.0.3:change holder default not reuse
     </description>
 
     <properties>

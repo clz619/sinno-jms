@@ -32,9 +32,9 @@ import javax.jms.Session;
 public class NodeConfigs {
 
     /**
-     * node. reuse flag . default true
+     * node. reuse flag . default false
      */
-    public static boolean DEFAULT_IS_REUSE = true;
+    public static boolean DEFAULT_IS_REUSE = false;
 
     /**
      * node. session transacted flag . default false

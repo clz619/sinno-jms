@@ -79,13 +79,15 @@ public class ConsumerHolderManager implements ICloseable {
             LOG.error(e.getMessage(), e);
         }
 
-        synchronized (connectionKey) {
-            if (consumerHolder != null) {
-                holderCount.incrementAndGet();
+
+        if (consumerHolder != null) {
+            synchronized (connectionKey) {
                 //add holder
                 consumerHolders.add(consumerHolder);
             }
+            holderCount.incrementAndGet();
         }
+
 
         return consumerHolder;
     }
@@ -96,12 +98,9 @@ public class ConsumerHolderManager implements ICloseable {
             return;
         }
 
-        synchronized (connectionKey) {
-            if (!consumerHolder.isClose()) {
-                consumerHolder.close();
-                holderCount.decrementAndGet();
-            }
+        justClose(consumerHolder);
 
+        synchronized (connectionKey) {
             consumerHolders.remove(consumerHolder);
         }
     }
@@ -112,14 +111,23 @@ public class ConsumerHolderManager implements ICloseable {
             Iterator<ConsumerHolder> it = consumerHolders.iterator();
 
             while (it.hasNext()) {
+
                 ConsumerHolder consumerHolder = it.next();
 
-                if (!consumerHolder.isClose()) {
-                    consumerHolder.close();
-                    holderCount.decrementAndGet();
-                }
+                justClose(consumerHolder);
 
                 it.remove();
+            }
+        }
+    }
+
+    private void justClose(ConsumerHolder consumerHolder) {
+
+        synchronized (consumerHolder) {
+
+            if (!consumerHolder.isClose()) {
+                consumerHolder.close();
+                holderCount.decrementAndGet();
             }
         }
     }

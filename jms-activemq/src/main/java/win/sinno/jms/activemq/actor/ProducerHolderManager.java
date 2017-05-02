@@ -83,11 +83,12 @@ public class ProducerHolderManager implements ICloseable {
             LOG.info(e.getMessage(), e);
         }
 
-        synchronized (connectionKey) {
-            if (holder != null) {
+
+        if (holder != null) {
+            synchronized (connectionKey) {
                 producerHolders.add(holder);
-                holderCount.incrementAndGet();
             }
+            holderCount.incrementAndGet();
         }
 
         return holder;
@@ -99,12 +100,9 @@ public class ProducerHolderManager implements ICloseable {
             return;
         }
 
-        synchronized (connectionKey) {
-            if (!producerHolder.isClose()) {
-                producerHolder.close();
-                holderCount.decrementAndGet();
-            }
+        justClose(producerHolder);
 
+        synchronized (connectionKey) {
             producerHolders.remove(producerHolder);
         }
     }
@@ -117,12 +115,18 @@ public class ProducerHolderManager implements ICloseable {
             while (it.hasNext()) {
                 ProducerHolder producerHolder = it.next();
 
-                if (!producerHolder.isClose()) {
-                    producerHolder.close();
-                    holderCount.decrementAndGet();
-                }
+                justClose(producerHolder);
 
                 it.remove();
+            }
+        }
+    }
+
+    private void justClose(ProducerHolder producerHolder) {
+        synchronized (producerHolder) {
+            if (!producerHolder.isClose()) {
+                producerHolder.close();
+                holderCount.decrementAndGet();
             }
         }
     }
