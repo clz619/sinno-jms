@@ -1,6 +1,5 @@
 package win.sinno.jms.api;
 
-import javax.jms.JMSException;
 import java.util.List;
 
 /**
@@ -17,14 +16,14 @@ public interface IProducer extends ITransacted, ICloseable {
      *
      * @param message
      */
-    boolean send(String message) throws JMSException;
+    boolean send(String message) throws Exception;
 
     /**
      * send messages(List)
      *
      * @param messages
      */
-    boolean send(List<String> messages) throws JMSException;
+    boolean send(List<String> messages) throws Exception;
 
     /**
      * session是否开启事务

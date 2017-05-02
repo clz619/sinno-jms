@@ -1,7 +1,5 @@
 package win.sinno.jms.api;
 
-import javax.jms.JMSException;
-
 /**
  * transacted
  *
@@ -12,8 +10,8 @@ import javax.jms.JMSException;
 public interface ITransacted {
 
     //提交
-    void commit() throws JMSException;
+    void commit() throws Exception;
 
     //回滚
-    void rollback() throws JMSException;
+    void rollback() throws Exception;
 }

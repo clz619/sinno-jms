@@ -12,6 +12,7 @@
         <module>jms-api</module>
         <module>jms-activemq</module>
         <module>jms-aliyun-mns</module>
+        <module>jms-aliyun-ons</module>
     </modules>
 
     <description>

@@ -1,7 +1,5 @@
 package win.sinno.jms.api;
 
-import javax.jms.MessageListener;
-
 /**
  * queue consumer
  *

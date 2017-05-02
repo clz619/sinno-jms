@@ -16,4 +16,5 @@ package/
 .classpath
 .project
 Servers/
-jdbc.properties
+#jdbc.properties
+test.properties
