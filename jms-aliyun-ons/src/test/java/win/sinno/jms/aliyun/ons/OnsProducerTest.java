@@ -3,6 +3,7 @@ package win.sinno.jms.aliyun.ons;
 import com.aliyun.openservices.ons.api.*;
 import org.junit.Test;
 import win.sinno.common.util.PropertiesUtil;
+import win.sinno.jms.aliyun.ons.actor.TopicProducer;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -39,8 +40,7 @@ public class OnsProducerTest {
     @Test
     public void testProducer() throws IOException {
         Properties properties = PropertiesUtil.loadFromResources("test.properties");
-        properties.put(PropertyKeyConst.ProducerId, "PID_test2324_1");//您在控制台创建的Producer ID
-        properties.setProperty(PropertyKeyConst.SendMsgTimeoutMillis, "3000");//设置发送超时时间，单位毫秒
+
         Producer producer = ONSFactory.createProducer(properties);
         // 在发送消息前，必须调用start方法来启动Producer，只需调用一次即可
         producer.start();
@@ -49,7 +49,7 @@ public class OnsProducerTest {
         for (int i = 0; i < 10; i++) {
             Message msg = new Message( //
                     // Message所属的Topic
-                    "tes2324",
+                    properties.getProperty(PropertyKeyConst.ProducerId),
                     // Message Tag 可理解为Gmail中的标签，对消息进行再归类，方便Consumer指定过滤条件在MQ服务器过滤
                     "TagA",
                     // Message Body 可以是任何二进制形式的数据， MQ不做任何干预，
@@ -67,6 +67,15 @@ public class OnsProducerTest {
         // 在应用退出前，销毁Producer对象
         // 注意：如果不销毁也没有问题
         producer.shutdown();
+    }
+
+    @Test
+    public void testP() throws Exception {
+        Properties properties = PropertiesUtil.loadFromResources("test.properties");
+        properties.put(win.sinno.jms.aliyun.ons.configs.PropertyKeyConst.tag, "tag1");
+        TopicProducer topicProducer = new TopicProducer(properties);
+        topicProducer.send("haha");
+
     }
 
 }

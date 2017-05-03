@@ -3,8 +3,11 @@ package win.sinno.jms.aliyun.ons;
 import com.aliyun.openservices.ons.api.*;
 import org.junit.Test;
 import win.sinno.common.util.PropertiesUtil;
+import win.sinno.jms.aliyun.ons.actor.TopicConsumer;
+import win.sinno.jms.api.MessageListenerHolder;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 /**
@@ -42,11 +45,9 @@ public class OnsConsumerTest {
 
         Properties properties = PropertiesUtil.loadFromResources("test.properties");
 
-        properties.put(PropertyKeyConst.ConsumerId, "CID_test2324_1");// 您在控制台创建的 Consumer ID
-
         Consumer consumer = ONSFactory.createConsumer(properties);
 
-        consumer.subscribe("tes2324", "*", new MessageListener() { //订阅多个Tag
+        consumer.subscribe(properties.getProperty(PropertyKeyConst.ConsumerId), "*", new MessageListener() { //订阅多个Tag
             public Action consume(Message message, ConsumeContext context) {
                 System.out.println("Receive: " + message);
                 byte[] bodyBytes = message.getBody();
@@ -57,6 +58,33 @@ public class OnsConsumerTest {
         });
 
         consumer.start();
+
+        System.out.println("Consumer Started");
+
+        Thread.sleep(10000000l);
+    }
+
+    @Test
+    public void testC() throws Exception {
+        Properties properties = PropertiesUtil.loadFromResources("test.properties");
+        properties.put(win.sinno.jms.aliyun.ons.configs.PropertyKeyConst.tag, "*");
+        MessageListener messageListener = new MessageListener() {
+            @Override
+            public Action consume(Message message, ConsumeContext consumeContext) {
+                byte[] bytes = message.getBody();
+                try {
+                    String msg = new String(bytes, "UTF-8");
+                    System.out.println("rcv msg:" + msg);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return Action.CommitMessage;
+            }
+        };
+
+        MessageListenerHolder messageListenerHolder = new MessageListenerHolder(messageListener);
+
+        TopicConsumer consumer = new TopicConsumer(properties, messageListenerHolder);
 
         System.out.println("Consumer Started");
 

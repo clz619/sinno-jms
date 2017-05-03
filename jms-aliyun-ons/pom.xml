@@ -20,10 +20,17 @@
             <scope>test</scope>
         </dependency>
 
+        <!--sinno-->
         <dependency>
             <groupId>win.sinno</groupId>
             <artifactId>sinno-common</artifactId>
             <version>${version.sinno.common}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>win.sinno</groupId>
+            <artifactId>jms-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
