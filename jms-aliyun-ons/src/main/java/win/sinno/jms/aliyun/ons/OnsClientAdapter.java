@@ -152,6 +152,12 @@ public abstract class OnsClientAdapter implements IOnsClient {
     }
 
     @Override
+    public IQueueConsumer createQueueConsumer(String queueName, MessageListenerHolder messageListenerHolder, int concurrentConsumer) {
+        return null;
+    }
+
+
+    @Override
     public ITopicConsumer createTopicConsumer(String topicName) {
         return null;
     }

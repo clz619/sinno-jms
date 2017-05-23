@@ -587,28 +587,28 @@ public class ActivemqClientTest {
                 }
             }
         }));
-
-        try {
-            for (int i = 0; i < 5; i++) {
-                topicProducer.send(i + "");
-
-                Thread.sleep(1000l);
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-
-        c2.close();
-
-        try {
-            for (int i = 5; i < 10; i++) {
-                topicProducer.send(i + "");
-
-                Thread.sleep(1000l);
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
+//
+//        try {
+//            for (int i = 0; i < 5; i++) {
+//                topicProducer.send(i + "");
+//
+//                Thread.sleep(1000l);
+//            }
+//        } catch (Exception e) {
+//            LOG.error(e.getMessage(), e);
+//        }
+//
+//        c2.close();
+//
+//        try {
+//            for (int i = 5; i < 10; i++) {
+//                topicProducer.send(i + "");
+//
+//                Thread.sleep(1000l);
+//            }
+//        } catch (Exception e) {
+//            LOG.error(e.getMessage(), e);
+//        }
 
         ITopicConsumer c3 = client.createTopicConsumer(topicName, new MessageListenerHolder(new MessageListener() {
             @Override
@@ -673,5 +673,32 @@ public class ActivemqClientTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testMutilConsumer() throws InterruptedException {
+        String brokerURL = "failover:(nio://127.0.0.1:61608)";
+
+        String queue = "transacted";
+        IClientConfig clientConfig = new ActivemqClientPoolConfig();
+
+        ActivemqClient client = ActivemqClientFactory.builder()
+                .brokerURL(brokerURL)
+                .clientConfig(clientConfig)
+                .build();
+        IQueueConsumer queueConsumer = client.createQueueConsumer(queue, new MessageListenerHolder(new MessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                try {
+                    TextMessage txtMsg = (TextMessage) message;
+
+                    LOG.info("consumer get msg:{}", new Object[]{txtMsg.getText()});
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }), 5);
+
+        Thread.sleep(100000l);
     }
 }

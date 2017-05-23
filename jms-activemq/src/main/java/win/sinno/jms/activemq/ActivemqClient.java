@@ -237,6 +237,11 @@ public class ActivemqClient implements IClient {
 
     @Override
     public IQueueConsumer createQueueConsumer(String queueName, MessageListenerHolder messageListenerHolder) {
+        return createQueueConsumer(queueName, null, 1);
+    }
+
+    @Override
+    public IQueueConsumer createQueueConsumer(String queueName, MessageListenerHolder messageListenerHolder, int concurrentNum) {
         IQueueConsumer c = null;
 
         try {
@@ -250,7 +255,7 @@ public class ActivemqClient implements IClient {
                     .actorType(ActorType.CONSUMER.getCode())
                     .build();
 
-            c = new QueueConsumer(this, actorInfo, messageListenerHolder);
+            c = new QueueConsumer(this, actorInfo, messageListenerHolder, concurrentNum);
 
             addConsumer(c);
         } catch (Exception e) {

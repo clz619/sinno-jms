@@ -82,6 +82,8 @@ public interface IClient extends ICloseable {
 
     IQueueConsumer createQueueConsumer(String queueName, MessageListenerHolder messageListenerHolder);
 
+    IQueueConsumer createQueueConsumer(String queueName, MessageListenerHolder messageListenerHolder, int concurrentConsumer);
+
     ITopicConsumer createTopicConsumer(String topicName);
 
     ITopicConsumer createTopicConsumer(String topicName, MessageListenerHolder messageListenerHolder);

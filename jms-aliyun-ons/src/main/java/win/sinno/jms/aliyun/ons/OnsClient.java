@@ -150,6 +150,7 @@ public class OnsClient extends OnsClientAdapter {
         this.clientConfig = clientConfig;
     }
 
+
     /**
      * topic producer
      *
@@ -181,7 +182,7 @@ public class OnsClient extends OnsClientAdapter {
 
 
     public void close() {
-        
+
         synchronized (producerLock) {
             Iterator<IProducer> producerIt = producers.iterator();
 
