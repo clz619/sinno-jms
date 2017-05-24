@@ -45,4 +45,9 @@ public class NodeConfigs {
      * node. session ack mode . default auto ack
      */
     public static int DEFAULT_SESSION_ACK_MODE = Session.AUTO_ACKNOWLEDGE;
+
+    /**
+     *
+     */
+    public static int DEFAULT_CONCURRENT_CONSUMER_NUM = 1;
 }

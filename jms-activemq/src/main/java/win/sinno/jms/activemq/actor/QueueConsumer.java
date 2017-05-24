@@ -28,6 +28,10 @@ public class QueueConsumer implements IQueueConsumer {
 
     private static final Logger LOG = LoggerConfigs.ACMQ_LOG;
 
+    private boolean isTransacted = NodeConfigs.DEFAULT_IS_TRANSACTED;
+
+    private int sessionAckMode = NodeConfigs.DEFAULT_SESSION_ACK_MODE;
+
     private ActivemqClient activemqClient;
 
     private ActorInfo actorInfo;
@@ -44,11 +48,7 @@ public class QueueConsumer implements IQueueConsumer {
 
     private ConsumerHolder lastConsumerHolder;
 
-    private int concurrentNum;
-
-    private boolean isTransacted = NodeConfigs.DEFAULT_IS_TRANSACTED;
-
-    private int sessionAckMode = NodeConfigs.DEFAULT_SESSION_ACK_MODE;
+    private int concurrentNum = NodeConfigs.DEFAULT_CONCURRENT_CONSUMER_NUM;
 
     public QueueConsumer(ActivemqClient activemqClient, ActorInfo actorInfo, MessageListenerHolder messageListenerHolder, int concurrentNum) {
         this(activemqClient, actorInfo, messageListenerHolder, NodeConfigs.DEFAULT_IS_TRANSACTED, NodeConfigs.DEFAULT_SESSION_ACK_MODE, concurrentNum);
@@ -78,6 +78,8 @@ public class QueueConsumer implements IQueueConsumer {
 
         setMessageListener(messageListenerHolder);
 
+        // max concurrent num
+        // min concurrent num
     }
 
     @Override
