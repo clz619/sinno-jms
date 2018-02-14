@@ -9,18 +9,18 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>jms-aliyun-mns</artifactId>
+  <artifactId>jms-rocketmq</artifactId>
 
   <description>
-    https://help.aliyun.com/document_detail/27508.html?spm=5176.doc32449.6.649.BCqQ5o
+    base rocketmq
   </description>
 
   <dependencies>
     <dependency>
-      <groupId>com.aliyun.mns</groupId>
-      <artifactId>aliyun-sdk-mns</artifactId>
-      <version>1.1.8</version>
-      <classifier>jar-with-dependencies</classifier>
+      <groupId>com.alibaba.rocketmq</groupId>
+      <artifactId>rocketmq-client</artifactId>
+      <version>RELEASE</version>
     </dependency>
   </dependencies>
+
 </project>
