@@ -15,12 +15,18 @@
     base rocketmq
   </description>
 
+  <properties>
+    <rocketmq.version>4.2.0</rocketmq.version>
+  </properties>
+
   <dependencies>
+
     <dependency>
-      <groupId>com.alibaba.rocketmq</groupId>
+      <groupId>org.apache.rocketmq</groupId>
       <artifactId>rocketmq-client</artifactId>
-      <version>RELEASE</version>
+      <version>4.2.0</version>
     </dependency>
+
   </dependencies>
 
 </project>
