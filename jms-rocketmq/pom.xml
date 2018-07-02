@@ -22,10 +22,24 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>win.sinno</groupId>
+      <artifactId>jms-api</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.rocketmq</groupId>
       <artifactId>rocketmq-client</artifactId>
       <version>4.2.0</version>
     </dependency>
+
 
   </dependencies>
 

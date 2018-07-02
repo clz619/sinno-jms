@@ -7,7 +7,7 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
 /**
  * win.sinno.jms.rocketmq.OnewayProducer
  *
- * @author chenlizhong@qipeng.com
+ * @author admin@chenlizhong.cn
  * @date 2018/3/21
  */
 public class OnewayProducer {
@@ -19,18 +19,22 @@ public class OnewayProducer {
 
     //Launch the instance.
     producer.start();
+
     for (int i = 0; i < 100; i++) {
+
       //Create a message instance, specifying topic, tag and message body.
       Message msg = new Message("test" /* Topic */,
           "c" /* Tag */,
           ("Hello RocketMQ " +
               i).getBytes(RemotingHelper.DEFAULT_CHARSET) /* Message body */
       );
+
       //Call send message to deliver message to one of brokers.
       producer.sendOneway(msg);
 
       System.out.println("send one way:" + i);
     }
+
     //Shut down once the producer instance is not longer in use.
     producer.shutdown();
   }

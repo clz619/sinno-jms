@@ -8,7 +8,7 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
 /**
  * win.sinno.jms.rocketmq.SyncProducer
  *
- * @author chenlizhong@qipeng.com
+ * @author admin@chenlizhong.cn
  * @date 2018/3/21
  */
 public class SyncProducer {
